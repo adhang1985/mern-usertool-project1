@@ -57,10 +57,13 @@ const updateUser = async(req,res) => {
             }
         });
         if(updatedUser){
+            const editedUser = {
+                id : userId, ...req.body
+            }
             res.status(200).send({
                 message : "user updated",
                 success : true,
-                data: updatedUser
+                data: editedUser
             })
         }
         else{
@@ -78,8 +81,9 @@ const updateUser = async(req,res) => {
 const deleteUser = async(req,res) => {
     try {
         const userId = req.params.id;
+        const selectedUser = await User.findOne({_id:userId});
         await User.deleteOne({_id:userId});
-        res.status(200).json({ message: "person is deleted" });
+        res.status(200).json({ message: "person is deleted",data:selectedUser });
     } catch (error) {
         res.status(500).send('Internal server error');
     }
